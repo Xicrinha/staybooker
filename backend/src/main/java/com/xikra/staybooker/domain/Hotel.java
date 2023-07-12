@@ -12,7 +12,7 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode(of = "id")
-@Builder(access = AccessLevel.PUBLIC)
+@Builder
 @Entity
 public class Hotel implements Serializable {
 
@@ -27,21 +27,18 @@ public class Hotel implements Serializable {
     private Integer rating;
     @ManyToMany
     @JoinTable(
-            name = "hotel_amenitie",
+            name = "hotel_amenity",
             joinColumns = @JoinColumn(name = "hotel_id"),
-            inverseJoinColumns = @JoinColumn(name = "amenitie_id")
+            inverseJoinColumns = @JoinColumn(name = "amenity_id")
     )
-    @Singular
     @Setter(AccessLevel.NONE)
     private Set<Amenity> amenities = new HashSet<>();
 
     @OneToMany(mappedBy = "hotel")
-    @Singular
     @Setter(AccessLevel.NONE)
     private Set<Room> rooms = new HashSet<>();
 
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
-    @Singular
     @Setter(AccessLevel.NONE)
     private Set<Image> images = new HashSet<>();
 

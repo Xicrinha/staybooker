@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -23,14 +24,14 @@ public class Guest implements Serializable {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "adress_id")
     private Adress adress;
-    private String telephoneNumber;
+    private String phoneNumber;
     private String email;
     @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL)
     @Setter(AccessLevel.NONE)
-    private Set<Reservation> reservations;
+    private Set<Reservation> reservations = new HashSet<>();
     @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL)
     @Setter(AccessLevel.NONE)
-    private Set<Review> reviews;
+    private Set<Review> reviews = new HashSet<>();
 
     public void addReservation(Reservation reservation){
         reservations.add(reservation);

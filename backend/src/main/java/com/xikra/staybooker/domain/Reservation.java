@@ -8,6 +8,7 @@ import lombok.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -27,9 +28,9 @@ public class Reservation implements Serializable {
     private Guest guest;
     @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL)
     @Setter(AccessLevel.NONE)
-    private Set<Room> rooms;
+    private Set<Room> rooms = new HashSet<>();
     private LocalDate checkinDate;
-    private LocalDate chackoutDate;
+    private LocalDate checkoutDate;
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
     private BigDecimal totalPrice;

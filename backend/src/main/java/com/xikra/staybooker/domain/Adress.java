@@ -18,7 +18,6 @@ public class Adress implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-
     private String street;
     private String number;
     private String city;
