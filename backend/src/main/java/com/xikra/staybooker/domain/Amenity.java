@@ -14,7 +14,7 @@ import java.io.Serializable;
 @EqualsAndHashCode(of = "id")
 @Builder
 @Entity
-public class Amenitie implements Serializable {
+public class Amenity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

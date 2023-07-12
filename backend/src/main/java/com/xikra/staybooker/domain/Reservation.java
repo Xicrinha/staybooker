@@ -26,6 +26,7 @@ public class Reservation implements Serializable {
     @JoinColumn(name = "guest_id")
     private Guest guest;
     @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL)
+    @Setter(AccessLevel.NONE)
     private Set<Room> rooms;
     private LocalDate checkinDate;
     private LocalDate chackoutDate;
@@ -34,4 +35,13 @@ public class Reservation implements Serializable {
     private BigDecimal totalPrice;
     private PaymentMethod paymentMethod;
 
+
+    public void addRoom(Room room){
+        rooms.add(room);
+    }
+
+    public void removeRoom(Room room){
+        rooms.remove(room);
+        room.setReservation(null);
+    }
 }

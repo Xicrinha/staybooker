@@ -9,10 +9,10 @@ import java.util.Set;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Getter
 @Setter
 @EqualsAndHashCode(of = "id")
+@Builder
 public class Guest implements Serializable {
 
     @Id
@@ -26,7 +26,27 @@ public class Guest implements Serializable {
     private String telephoneNumber;
     private String email;
     @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL)
+    @Setter(AccessLevel.NONE)
     private Set<Reservation> reservations;
     @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL)
+    @Setter(AccessLevel.NONE)
     private Set<Review> reviews;
+
+    public void addReservation(Reservation reservation){
+        reservations.add(reservation);
+    }
+
+    public void removeReservation(Reservation reservation){
+        reservations.remove(reservation);
+        reservation.setGuest(null);
+    }
+
+    public void addReview(Review review){
+        reviews.add(review);
+    }
+
+    public void removeReview(Review review){
+        reviews.remove(review);
+        review.setGuest(null);
+    }
 }
