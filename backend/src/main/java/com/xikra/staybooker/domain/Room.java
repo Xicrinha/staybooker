@@ -21,4 +21,7 @@ public class Room implements Serializable {
     @ManyToOne
     @JoinColumn(name = "hotel_id")
     private Hotel hotel;
+    @ManyToOne
+    @JoinColumn(name = "reservation_id")
+    private Reservation reservation;
 }

@@ -1,9 +1,18 @@
 package com.xikra.staybooker.domain;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.io.Serializable;
+import java.util.Set;
 
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
+@Setter
+@EqualsAndHashCode(of = "id")
 public class Guest implements Serializable {
 
     @Id
@@ -16,4 +25,8 @@ public class Guest implements Serializable {
     private Adress adress;
     private String telephoneNumber;
     private String email;
+    @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL)
+    private Set<Reservation> reservations;
+    @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL)
+    private Set<Review> reviews;
 }

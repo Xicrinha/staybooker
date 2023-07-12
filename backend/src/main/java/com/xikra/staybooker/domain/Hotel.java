@@ -23,6 +23,7 @@ public class Hotel implements Serializable {
     @JoinColumn(name = "adress_id")
     private Adress adress;
     private String description;
+    private Integer rating;
     @ManyToMany
     @JoinTable(
             name = "hotel_amenitie",
@@ -32,5 +33,6 @@ public class Hotel implements Serializable {
     private Set<Amenitie> amenities;
     @OneToMany(mappedBy = "hotel")
     private Set<Room> rooms;
-
+    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
+    private Set<Image> images;
 }
