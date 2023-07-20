@@ -26,7 +26,7 @@ public class Reservation implements Serializable {
     @ManyToOne
     @JoinColumn(name = "guest_id")
     private Guest guest;
-    @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
     @Setter(AccessLevel.NONE)
     private Set<Room> rooms = new HashSet<>();
     private LocalDate checkinDate;
