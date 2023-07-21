@@ -20,7 +20,7 @@ public class GuestDTO {
     private String firstname;
     @NotBlank(message = "Last name is required")
     private String lastname;
-    private AdressDTO adress;
+    private AddressDTO adress;
     @NotBlank(message = "Phone number is required")
     @Pattern(regexp = "\\(\\d{2}\\)\\s\\d{4,5}-\\d{4}", message = "The phone number must be in the format (XX) XXXX-XXXX or (XX) XXXXX-XXXX")
     private String phoneNumber;

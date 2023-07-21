@@ -10,7 +10,7 @@ import lombok.*;
 @Setter
 @EqualsAndHashCode(of = "id")
 @Builder
-public class AdressDTO {
+public class AddressDTO {
 
     private Long id;
     @NotBlank(message = "Street name is required")

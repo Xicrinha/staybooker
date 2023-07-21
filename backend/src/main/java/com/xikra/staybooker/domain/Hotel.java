@@ -22,7 +22,7 @@ public class Hotel implements Serializable {
     private String name;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "adress_id")
-    private Adress adress;
+    private Address address;
     private String description;
     private Integer rating;
     @ManyToMany

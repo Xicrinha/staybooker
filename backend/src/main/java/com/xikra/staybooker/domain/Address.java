@@ -14,7 +14,7 @@ import java.io.Serializable;
 @EqualsAndHashCode(of = "id")
 @Builder
 @Entity
-public class Adress implements Serializable {
+public class Address implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;

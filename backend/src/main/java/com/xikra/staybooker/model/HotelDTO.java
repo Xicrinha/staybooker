@@ -20,7 +20,7 @@ public class HotelDTO {
     private String name;
 
     @NotNull(message = "Address is required")
-    private AdressDTO adress;
+    private AddressDTO adress;
 
     @NotBlank(message = "Description is required")
     @Size(max = 255, message = "The description must be a maximum of 255 characters")

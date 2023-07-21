@@ -23,7 +23,7 @@ public class Guest implements Serializable {
     private String lastname;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "adress_id")
-    private Adress adress;
+    private Address address;
     private String phoneNumber;
     private String email;
     @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL)
