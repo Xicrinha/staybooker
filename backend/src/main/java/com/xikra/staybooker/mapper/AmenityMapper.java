@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 @Mapper
 public interface AmenityMapper {
 
-    AmenityDTO amenityToAmenityDTO(Amenity amenity);
+    AmenityDTO toDTO(Amenity amenity);
 
-    Amenity amenityDTOToAmenity(AmenityDTO amenityDTO);
+    Amenity toEntity(AmenityDTO amenityDTO);
 }
