@@ -29,7 +29,6 @@ public class AddressService {
     public Address updateAddress(Long id, Address address) {
         Address existingAddress = addressRespository.findById(id).orElse(null);
         if(existingAddress != null){
-            existingAddress.setId(address.getId());
             existingAddress.setCity(address.getCity());
             existingAddress.setStreet(address.getStreet());
             existingAddress.setNumber(address.getNumber());

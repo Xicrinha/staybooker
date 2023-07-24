@@ -22,7 +22,7 @@ public class AmenityController {
 
     @PostMapping
     public ResponseEntity<AmenityDTO> createAmenity(@RequestBody @Valid AmenityDTO amenityDTO){
-        Amenity createdAmenity = AmenityService.createAmenity(amenityMapper.toEntity(amenityDTO));
+        Amenity createdAmenity = amenityService.createAmenity(amenityMapper.toEntity(amenityDTO));
         return new ResponseEntity<>(amenityMapper.toDTO(createdAmenity), HttpStatus.CREATED);
     }
 
@@ -64,15 +64,4 @@ public class AmenityController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<AmenityDTO> amenityPatch(@RequestBody @Valid AmenityDTO amenityDTO, @PathVariable Long id){
-        Amenity updatedAmenity = amenityService.amenityPatch(amenityMapper.toEntity(amenityDTO), id);
-        if(updatedAmenity != null){
-            return new ResponseEntity<>(amenityMapper.toDTO(updatedAmenity), HttpStatus.OK);
-        }else{
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
 }
