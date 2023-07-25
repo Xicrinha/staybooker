@@ -69,7 +69,7 @@ public class GuestController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<GuestDTO> guestPatch(@PathVariable Long id, @RequestBody GuestDTO guestDTO){
-        Guest updatedGuest = guestService.addressPatch(id, guestMapper.toEntity(guestDTO));
+        Guest updatedGuest = guestService.guestPatch(id, guestMapper.toEntity(guestDTO));
         if(updatedGuest != null){
             return new ResponseEntity<>(guestMapper.toDTO(updatedGuest), HttpStatus.OK);
         }else {
