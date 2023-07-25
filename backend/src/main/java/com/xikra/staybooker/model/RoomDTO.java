@@ -25,7 +25,6 @@ public class RoomDTO {
     @NotNull(message = "Room price is required")
     @Positive(message = "Room price must be positive value")
     private BigDecimal price;
-    @NotNull(message = "The hotel is required")
     private HotelDTO hotel;
     private ReservationDTO reservation;
 }

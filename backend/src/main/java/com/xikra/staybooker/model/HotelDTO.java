@@ -30,10 +30,11 @@ public class HotelDTO {
     @Positive(message = "the rating must be positive value")
     private Integer rating;
 
+    @NotEmpty(message = "Must select at least one amenity")
     private Set<AmenityDTO> amenities = new HashSet<>();
-
+    @NotEmpty(message = "Must select at least one room")
     private Set<RoomDTO> rooms = new HashSet<>();
-
+    @NotEmpty(message = "Must select at least one image")
     private Set<ImageDTO> images = new HashSet<>();
 
     public void addAmenitiy(AmenityDTO amenity){

@@ -13,7 +13,6 @@ import lombok.*;
 @Builder
 public class ImageDTO {
     private Long id;
-    @NotNull(message = "The hotel is required")
     private HotelDTO hotel;
     @NotBlank(message = "Image URL is required")
     @Pattern(regexp = "^https?://.*$", message = "Image URL must start with 'http://' or 'https://'")
