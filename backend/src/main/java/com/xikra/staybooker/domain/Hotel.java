@@ -17,7 +17,7 @@ import java.util.Set;
 public class Hotel implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     @OneToOne(cascade = CascadeType.ALL)
