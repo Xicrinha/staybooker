@@ -2,6 +2,7 @@ package com.xikra.staybooker.controller;
 
 import com.xikra.staybooker.domain.Address;
 import com.xikra.staybooker.domain.Guest;
+import com.xikra.staybooker.exceptions.NotFoundException;
 import com.xikra.staybooker.mapper.GuestMapper;
 import com.xikra.staybooker.model.AddressDTO;
 import com.xikra.staybooker.model.GuestDTO;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/staybooker/guests")
@@ -33,32 +35,25 @@ public class GuestController {
         List<GuestDTO> guestDTOList = guestService.getAllGuests()
                 .stream()
                 .map(guestMapper::toDTO)
-                .toList();
+                .collect(Collectors.toList());
         return new ResponseEntity<>(guestDTOList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GuestDTO> getGuestById(@PathVariable Long id){
-        Guest guest = guestService.getGuestById(id);
-        if(guest != null){
-            return new ResponseEntity<>(guestMapper.toDTO(guest), HttpStatus.OK);
-        }else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<GuestDTO> getGuestById(@PathVariable("/{id}") Long id){
+        GuestDTO guestDTO = guestService.getGuestById(id)
+                .map(guestMapper::toDTO).orElseThrow(NotFoundException::new);
+        return new ResponseEntity<>(guestDTO,HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GuestDTO> updateGuest(@RequestBody @Valid GuestDTO guestDTO,@PathVariable Long id){
+    public ResponseEntity<GuestDTO> updateGuest(@RequestBody @Valid GuestDTO guestDTO,@PathVariable("/{id}") Long id){
         Guest updatedGuest = guestService.updateGuest(guestMapper.toEntity(guestDTO), id);
-        if(updatedGuest != null){
-            return new ResponseEntity<>(guestMapper.toDTO(updatedGuest), HttpStatus.OK);
-        }else{
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(guestMapper.toDTO(updatedGuest), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteGuest(@PathVariable Long id){
+    public ResponseEntity<Void> deleteGuest(@PathVariable("/{id}") Long id){
         boolean deleted = guestService.deleteGuest(id);
         if(deleted){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -68,13 +63,9 @@ public class GuestController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<GuestDTO> guestPatch(@PathVariable Long id, @RequestBody GuestDTO guestDTO){
+    public ResponseEntity<GuestDTO> guestPatch(@PathVariable("/{id}") Long id, @RequestBody GuestDTO guestDTO){
         Guest updatedGuest = guestService.guestPatch(id, guestMapper.toEntity(guestDTO));
-        if(updatedGuest != null){
-            return new ResponseEntity<>(guestMapper.toDTO(updatedGuest), HttpStatus.OK);
-        }else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(guestMapper.toDTO(updatedGuest), HttpStatus.OK);
     }
 
 }
