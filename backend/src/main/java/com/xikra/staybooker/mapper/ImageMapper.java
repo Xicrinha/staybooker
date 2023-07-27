@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 @Mapper
 public interface ImageMapper {
 
-    ImageDTO imageToImageDTO(Image image);
+    ImageDTO toDTO(Image image);
 
-    Image ImageDTOToImage(ImageDTO imageDTO);
+    Image toEntity(ImageDTO imageDTO);
 }

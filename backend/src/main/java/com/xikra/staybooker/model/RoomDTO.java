@@ -1,5 +1,6 @@
 package com.xikra.staybooker.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.xikra.staybooker.enums.Availability;
 import com.xikra.staybooker.enums.RoomType;
 import jakarta.validation.constraints.NotBlank;
@@ -25,6 +26,7 @@ public class RoomDTO {
     @NotNull(message = "Room price is required")
     @Positive(message = "Room price must be positive value")
     private BigDecimal price;
+    @JsonIgnore
     private HotelDTO hotel;
     private ReservationDTO reservation;
 }

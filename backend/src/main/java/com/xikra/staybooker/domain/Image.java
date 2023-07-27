@@ -6,13 +6,18 @@ import lombok.*;
 import java.io.Serializable;
 
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode(of = "id")
 @Builder
 public class Image implements Serializable {
+
+    public Image(Long id, Hotel hotel, String url) {
+        this.id = id;
+        this.setHotel(hotel);
+        this.url = url;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -21,4 +26,9 @@ public class Image implements Serializable {
     @JoinColumn(name = "hotel_id")
     private Hotel hotel;
     private String url;
+
+    public void setHotel(Hotel hotel) {
+        this.hotel = hotel;
+        hotel.getImages().add(this);
+    }
 }

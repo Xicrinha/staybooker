@@ -1,5 +1,6 @@
 package com.xikra.staybooker.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -19,8 +20,22 @@ public class HotelDTO {
     @NotBlank(message = "The name is required")
     private String name;
 
-    @NotNull(message = "Address is required")
-    private AddressDTO adress;
+    @NotBlank(message = "Street name is required")
+    private String street;
+
+    @NotBlank(message = "Number is required")
+    private String number;
+
+    @NotBlank(message = "The city is required")
+    private String city;
+
+    @NotBlank(message = "The state is required")
+    @Size(min = 2, max = 2, message = "State must be exactly 2 characters long")
+    private String state;
+
+    @NotBlank(message = "The Zip Code is required")
+    @Size(min = 5, max = 10, message = "The Zip Code must be between 5 and 10 characters")
+    private String zipcode;
 
     @NotBlank(message = "Description is required")
     @Size(max = 255, message = "The description must be a maximum of 255 characters")
@@ -32,9 +47,8 @@ public class HotelDTO {
 
     @NotEmpty(message = "Must select at least one amenity")
     private Set<AmenityDTO> amenities = new HashSet<>();
-    @NotEmpty(message = "Must select at least one room")
+
     private Set<RoomDTO> rooms = new HashSet<>();
-    @NotEmpty(message = "Must select at least one image")
     private Set<ImageDTO> images = new HashSet<>();
 
     public void addAmenitiy(AmenityDTO amenity){

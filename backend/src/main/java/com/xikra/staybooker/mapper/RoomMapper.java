@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 @Mapper
 public interface RoomMapper {
 
-    RoomDTO roomToRoomDTO(Room room);
+    RoomDTO toDTO(Room room);
 
-    Room roomDTOToRoom(RoomDTO roomDTO);
+    Room toEntity(RoomDTO roomDTO);
 }

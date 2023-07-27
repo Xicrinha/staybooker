@@ -25,21 +25,22 @@ public class Hotel implements Serializable {
     private Address address;
     private String description;
     private Integer rating;
-    @ManyToMany
+
+    @Builder.Default
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "hotel_amenity",
             joinColumns = @JoinColumn(name = "hotel_id"),
             inverseJoinColumns = @JoinColumn(name = "amenity_id")
     )
-    @Setter(AccessLevel.NONE)
     private Set<Amenity> amenities = new HashSet<>();
 
-    @OneToMany(mappedBy = "hotel")
-    @Setter(AccessLevel.NONE)
+    @Builder.Default
+    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
     private Set<Room> rooms = new HashSet<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
-    @Setter(AccessLevel.NONE)
     private Set<Image> images = new HashSet<>();
 
     public void addAmenitiy(Amenity amenity){
@@ -48,23 +49,5 @@ public class Hotel implements Serializable {
 
     public void removeAmenity(Amenity amenity){
         amenities.remove(amenity);
-    }
-
-    public void addRoom(Room room){
-        rooms.add(room);
-    }
-
-    public void removeRoom(Room room){
-        rooms.remove(room);
-        room.setHotel(null);
-    }
-
-    public void addImage(Image image){
-        images.add(image);
-    }
-
-    public void removeImage(Image image){
-        images.remove(image);
-        image.setHotel(null);
     }
 }
