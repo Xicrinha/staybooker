@@ -1,6 +1,7 @@
 package com.xikra.staybooker.controller;
 
 import com.xikra.staybooker.domain.Hotel;
+import com.xikra.staybooker.exceptions.NotFoundException;
 import com.xikra.staybooker.mapper.HotelMapper;
 import com.xikra.staybooker.model.HotelDTO;
 import com.xikra.staybooker.service.HotelService;
@@ -36,4 +37,10 @@ public class HotelController {
         return new ResponseEntity<>(hotelDTOList, HttpStatus.OK);
     }
 
+
+    @GetMapping(value = "/{id}")
+    public HotelDTO getHotelById(@PathVariable("id") Long id){
+        return hotelService.getHotelById(id).map(hotelMapper::toDTO)
+                .orElseThrow(NotFoundException::new);
+    }
 }
