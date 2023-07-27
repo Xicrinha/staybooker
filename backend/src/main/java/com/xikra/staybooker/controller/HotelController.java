@@ -9,9 +9,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/staybooker/hotels")
@@ -33,14 +35,38 @@ public class HotelController {
         List<HotelDTO> hotelDTOList = hotelService.gettAllHotel()
                 .stream()
                 .map(hotelMapper::toDTO)
-                .toList();
+                .collect(Collectors.toList());
         return new ResponseEntity<>(hotelDTOList, HttpStatus.OK);
     }
 
 
     @GetMapping(value = "/{id}")
-    public HotelDTO getHotelById(@PathVariable("id") Long id){
-        return hotelService.getHotelById(id).map(hotelMapper::toDTO)
-                .orElseThrow(NotFoundException::new);
+    public ResponseEntity<HotelDTO> getHotelById(@PathVariable("id") Long id){
+        HotelDTO hotelDTO = hotelService.getHotelById(id).map(hotelMapper::toDTO)
+                    .orElseThrow(NotFoundException::new);
+        return new ResponseEntity<>(hotelDTO, HttpStatus.OK);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<HotelDTO> updateHotel(@PathVariable("id") Long id, @RequestBody @Valid HotelDTO hotelDTO){
+        Hotel updatedHotel = hotelService.updateHotel(id,hotelMapper.toEntity(hotelDTO));
+        return new ResponseEntity<>(hotelMapper.toDTO(updatedHotel),HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteHotel(@PathVariable("id") Long id){
+        boolean deleted = hotelService.deleteHotel(id);
+        if(deleted){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }else{
+            throw new NotFoundException();
+        }
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<HotelDTO> patchHotel(@PathVariable Long id, @RequestBody HotelDTO hotelDTO){
+        Hotel updatedHotel = hotelService.patchHotel(id,hotelMapper.toEntity(hotelDTO));
+        return new ResponseEntity<>(hotelMapper.toDTO(updatedHotel),HttpStatus.OK);
+    }
+
 }
