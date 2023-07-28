@@ -1,6 +1,7 @@
 package com.xikra.staybooker.controller;
 
 import com.xikra.staybooker.domain.Amenity;
+import com.xikra.staybooker.exceptions.NotFoundException;
 import com.xikra.staybooker.mapper.AmenityMapper;
 import com.xikra.staybooker.model.AmenityDTO;
 import com.xikra.staybooker.service.AmenityService;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/staybooker/amenities")
@@ -31,37 +33,31 @@ public class AmenityController {
         List<AmenityDTO> amenityDTOList = amenityService.getAllAmenities()
                 .stream()
                 .map(amenityMapper::toDTO)
-                .toList();
+                .collect(Collectors.toList());
         return new ResponseEntity<>(amenityDTOList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AmenityDTO> getAmenityById(@PathVariable Long id){
-        Amenity amenity = amenityService.getAmenityById(id);
-        if(amenity != null){
-            return new ResponseEntity<>(amenityMapper.toDTO(amenity), HttpStatus.OK);
-        }else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<AmenityDTO> getAmenityById(@PathVariable("id") Long id){
+        AmenityDTO amenityDTO = amenityService.getAmenityById(id)
+                .map(amenityMapper::toDTO)
+                .orElseThrow(NotFoundException::new);
+        return new ResponseEntity<>(amenityDTO, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AmenityDTO> updateAmenity(@RequestBody @Valid AmenityDTO amenityDTO, @PathVariable Long id){
+    public ResponseEntity<AmenityDTO> updateAmenity(@RequestBody @Valid AmenityDTO amenityDTO, @PathVariable("id") Long id){
         Amenity updatedAmenity = amenityService.updateAmenity(amenityMapper.toEntity(amenityDTO), id);
-        if(updatedAmenity != null){
-            return new ResponseEntity<>(amenityMapper.toDTO(updatedAmenity), HttpStatus.OK);
-        }else{
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(amenityMapper.toDTO(updatedAmenity), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAmenity(@PathVariable Long id){
+    public ResponseEntity<Void> deleteAmenity(@PathVariable("id") Long id){
         boolean deleted = amenityService.deleteAmenity(id);
         if(deleted){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new NotFoundException();
         }
     }
 }

@@ -1,11 +1,13 @@
 package com.xikra.staybooker.service;
 
 import com.xikra.staybooker.domain.Amenity;
+import com.xikra.staybooker.exceptions.NotFoundException;
 import com.xikra.staybooker.repository.AmenityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,17 +23,14 @@ public class AmenityService {
         return amenityRepository.findAll();
     }
 
-    public Amenity getAmenityById(Long id) {
-        return amenityRepository.findById(id).orElse(null);
+    public Optional<Amenity> getAmenityById(Long id) {
+        return amenityRepository.findById(id);
     }
 
     public Amenity updateAmenity(Amenity amenity, Long id) {
-        Amenity existingAmenity = amenityRepository.findById(id).orElse(null);
-        if(existingAmenity != null){
-            existingAmenity.setName(amenity.getName());
-            return amenityRepository.save(existingAmenity);
-        }
-        return null;
+        Amenity existingAmenity = amenityRepository.findById(id).orElseThrow(NotFoundException::new);
+        existingAmenity.setName(amenity.getName());
+        return amenityRepository.save(existingAmenity);
     }
 
     public boolean deleteAmenity(Long id) {
