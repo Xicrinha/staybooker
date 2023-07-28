@@ -1,6 +1,7 @@
 package com.xikra.staybooker.controller;
 
 import com.xikra.staybooker.domain.Address;
+import com.xikra.staybooker.exceptions.NotFoundException;
 import com.xikra.staybooker.mapper.AddressMapper;
 import com.xikra.staybooker.model.AddressDTO;
 import com.xikra.staybooker.service.AddressService;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/staybooker/addresses")
@@ -32,47 +34,37 @@ public class AddressController {
         List<AddressDTO> addressDTOList = addressService.getAllAddress()
                 .stream()
                 .map(addressMapper::toDTO)
-                .toList();
+                .collect(Collectors.toList());
         return new ResponseEntity<>(addressDTOList,HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AddressDTO> getAddressById(@PathVariable Long id){
-        Address address = addressService.getAddresById(id);
-        if(address != null){
-            return new ResponseEntity<>(addressMapper.toDTO(address),HttpStatus.OK);
-        }else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<AddressDTO> getAddressById(@PathVariable("id") Long id){
+        AddressDTO addressDTO = addressService.getAddresById(id)
+                .map(addressMapper::toDTO)
+                .orElseThrow(NotFoundException::new);
+        return new ResponseEntity<>(addressDTO, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AddressDTO> updateAddress(@PathVariable Long id, @RequestBody @Valid AddressDTO addressDTO){
+    public ResponseEntity<AddressDTO> updateAddress(@PathVariable("id") Long id, @RequestBody @Valid AddressDTO addressDTO){
         Address updatedAddress = addressService.updateAddress(id, addressMapper.toEntity(addressDTO));
-        if(updatedAddress != null){
-            return new ResponseEntity<>(addressMapper.toDTO(updatedAddress), HttpStatus.OK);
-        }else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(addressMapper.toDTO(updatedAddress), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAddress(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteAddress(@PathVariable("id") Long id) {
         boolean deleted = addressService.deleteAddress(id);
         if(deleted){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new NotFoundException();
         }
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<AddressDTO> addressPatch(@PathVariable Long id, @RequestBody AddressDTO addressDTO){
+    public ResponseEntity<AddressDTO> addressPatch(@PathVariable("id") Long id, @RequestBody AddressDTO addressDTO){
         Address updatedAddress = addressService.addressPatch(id, addressMapper.toEntity(addressDTO));
-        if(updatedAddress != null){
-            return new ResponseEntity<>(addressMapper.toDTO(updatedAddress), HttpStatus.OK);
-        }else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(addressMapper.toDTO(updatedAddress), HttpStatus.OK);
     }
 }
