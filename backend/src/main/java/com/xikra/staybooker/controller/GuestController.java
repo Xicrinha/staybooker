@@ -40,30 +40,30 @@ public class GuestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GuestDTO> getGuestById(@PathVariable("/{id}") Long id){
+    public ResponseEntity<GuestDTO> getGuestById(@PathVariable("id") Long id){
         GuestDTO guestDTO = guestService.getGuestById(id)
                 .map(guestMapper::toDTO).orElseThrow(NotFoundException::new);
         return new ResponseEntity<>(guestDTO,HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GuestDTO> updateGuest(@RequestBody @Valid GuestDTO guestDTO,@PathVariable("/{id}") Long id){
+    public ResponseEntity<GuestDTO> updateGuest(@RequestBody @Valid GuestDTO guestDTO,@PathVariable("id") Long id){
         Guest updatedGuest = guestService.updateGuest(guestMapper.toEntity(guestDTO), id);
         return new ResponseEntity<>(guestMapper.toDTO(updatedGuest), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteGuest(@PathVariable("/{id}") Long id){
+    public ResponseEntity<Void> deleteGuest(@PathVariable("id") Long id){
         boolean deleted = guestService.deleteGuest(id);
         if(deleted){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new NotFoundException();
         }
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<GuestDTO> guestPatch(@PathVariable("/{id}") Long id, @RequestBody GuestDTO guestDTO){
+    public ResponseEntity<GuestDTO> guestPatch(@PathVariable("id") Long id, @RequestBody GuestDTO guestDTO){
         Guest updatedGuest = guestService.guestPatch(id, guestMapper.toEntity(guestDTO));
         return new ResponseEntity<>(guestMapper.toDTO(updatedGuest), HttpStatus.OK);
     }
