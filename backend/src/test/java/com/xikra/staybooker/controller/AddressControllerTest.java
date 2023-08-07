@@ -71,4 +71,20 @@ public class AddressControllerTest{
 
         response.andExpect(status().isCreated());
     }
+
+    @Test
+    public void testCreateAddress_ReturnsBadRequestStatus() throws Exception{
+        addressDTO.setZipcode("7282017");
+        addressDTO.setState("RJDF");
+
+        given(addressService.createAddress(any())).willAnswer(invocation -> invocation.getArgument(0));
+        given(addressMapper.toEntity(any(AddressDTO.class))).willReturn(new Address());
+        given(addressMapper.toDTO(any(Address.class))).willReturn(addressDTO);
+
+        ResultActions response = mockMvc.perform(post("/staybooker/addresses")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(addressDTO)));
+
+        response.andExpect(status().isBadRequest());
+    }
 }
