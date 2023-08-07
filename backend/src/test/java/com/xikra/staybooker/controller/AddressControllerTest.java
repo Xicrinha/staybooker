@@ -1,5 +1,6 @@
 package com.xikra.staybooker.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xikra.staybooker.domain.Address;
 import com.xikra.staybooker.mapper.AddressMapper;
 import com.xikra.staybooker.mapper.AddressMapperImpl;
@@ -8,88 +9,66 @@ import com.xikra.staybooker.service.AddressService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+@WebMvcTest(AddressController.class)
+@AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
-class AddressControllerTest {
+public class AddressControllerTest{
 
-    private static final Logger logger = LoggerFactory.getLogger(AddressControllerTest.class);
+    @Autowired
+    private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     private AddressService addressService;
-    private AddressMapper addressMapper = new AddressMapperImpl();
-    private AddressController addressController;
+
+    @MockBean
+    private AddressMapper addressMapper;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private AddressDTO addressDTO;
 
     @BeforeEach
-    void setUp() {
-        addressController = new AddressController(addressService, addressMapper);
-    }
-
-    @Test
-    void testCreateAddress_returnAddressDTO_WhenFieldsAreValid() {
-        AddressDTO addressDTO = AddressDTO.builder()
+    void init() {
+        addressDTO = AddressDTO.builder()
                 .street("Rua das maravilhas milagrosas")
                 .number("35 C")
                 .city("Canareiros")
                 .state("RJ")
                 .zipcode("72830170")
                 .build();
-
-        Address address = Address.builder()
-                .id(1L)
-                .street("Rua maravilhas milagrosas")
-                .number("35 C")
-                .city("Canareiros")
-                .state("RJ")
-                .zipcode("72830170")
-                .build();
-
-        when(addressService.createAddress(any(Address.class))).thenReturn(address);
-
-        ResponseEntity<AddressDTO> response = addressController.createAddress(addressDTO);
-
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(1L, response.getBody().getId());
-    }
-
-    /*
-
-    @Test
-    void getAllAddress() {
     }
 
     @Test
-    void getAddressById() {
+    public void testCreateAddress_ReturnsCreatedStatus() throws Exception {
+
+        given(addressService.createAddress(any())).willAnswer(invocation -> invocation.getArgument(0));
+        given(addressMapper.toEntity(any(AddressDTO.class))).willReturn(new Address());
+        given(addressMapper.toDTO(any(Address.class))).willReturn(addressDTO);
+
+        ResultActions response = mockMvc.perform(post("/staybooker/addresses")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(addressDTO)));
+
+        response.andExpect(status().isCreated());
     }
-
-    @Test
-    void updateAddress() {
-    }
-
-    @Test
-    void deleteAddress() {
-    }
-
-    @Test
-    void addressPatch() {
-    }
-
-     */
-
 }
