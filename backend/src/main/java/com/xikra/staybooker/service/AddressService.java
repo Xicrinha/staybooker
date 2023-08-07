@@ -2,54 +2,63 @@ package com.xikra.staybooker.service;
 
 import com.xikra.staybooker.domain.Address;
 import com.xikra.staybooker.exceptions.NotFoundException;
-import com.xikra.staybooker.repository.AddressRespository;
+import com.xikra.staybooker.repository.AddressRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class AddressService {
 
-    private final AddressRespository addressRespository;
+    private final AddressRepository addressRepository;
     public Address createAddress(Address address) {
-        return addressRespository.save(address);
+        return addressRepository.save(address);
     }
 
-    public List<Address> getAllAddress() {
-        return addressRespository.findAll();
+    public List<Address> getAllAddress(String city, String state) {
+
+        if(StringUtils.hasText(city) && !StringUtils.hasText(state)){
+            return addressRepository.findByCity(city);
+        }else if(!StringUtils.hasText(city) && StringUtils.hasText(state)){
+            return addressRepository.findByState(state);
+        }else if(StringUtils.hasText(city) && StringUtils.hasText(state)){
+            return addressRepository.findByCityAndState(city, state);
+        }else {
+            return addressRepository.findAll();
+        }
     }
 
     public Optional<Address> getAddresById(Long id) {
-        return addressRespository.findById(id);
+        return addressRepository.findById(id);
     }
 
     public Address updateAddress(Long id, Address address) {
-        Address existingAddress = addressRespository.findById(id).orElseThrow(NotFoundException::new);
+        Address existingAddress = addressRepository.findById(id).orElseThrow(NotFoundException::new);
         existingAddress.setCity(address.getCity());
         existingAddress.setStreet(address.getStreet());
         existingAddress.setNumber(address.getNumber());
         existingAddress.setState(address.getState());
         existingAddress.setZipcode(address.getZipcode());
 
-        return addressRespository.save(existingAddress);
+        return addressRepository.save(existingAddress);
 
     }
 
     public boolean deleteAddress(Long id) {
-        if(addressRespository.existsById(id)){
-            addressRespository.deleteById(id);
+        if(addressRepository.existsById(id)){
+            addressRepository.deleteById(id);
             return true;
         }
         return false;
     }
 
     public Address addressPatch(Long id, Address address) {
-        Address existingAddress = addressRespository.findById(id).orElseThrow(NotFoundException::new);
+        Address existingAddress = addressRepository.findById(id).orElseThrow(NotFoundException::new);
         if (StringUtils.hasText(address.getNumber())){
             existingAddress.setNumber(address.getNumber());
         }
@@ -70,6 +79,6 @@ public class AddressService {
             existingAddress.setZipcode(address.getZipcode());
         }
 
-        return addressRespository.save(existingAddress);
+        return addressRepository.save(existingAddress);
     }
 }

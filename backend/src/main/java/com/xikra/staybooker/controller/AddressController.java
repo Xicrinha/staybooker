@@ -30,8 +30,9 @@ public class AddressController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AddressDTO>> getAllAddress(){
-        List<AddressDTO> addressDTOList = addressService.getAllAddress()
+    public ResponseEntity<List<AddressDTO>> getAllAddress(@RequestParam(required = false) String city,
+                                                          @RequestParam(required = false) String state){
+        List<AddressDTO> addressDTOList = addressService.getAllAddress(city, state)
                 .stream()
                 .map(addressMapper::toDTO)
                 .collect(Collectors.toList());
