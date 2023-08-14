@@ -1,90 +1,162 @@
 package com.xikra.staybooker.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xikra.staybooker.domain.Address;
 import com.xikra.staybooker.mapper.AddressMapper;
-import com.xikra.staybooker.mapper.AddressMapperImpl;
 import com.xikra.staybooker.model.AddressDTO;
 import com.xikra.staybooker.service.AddressService;
+import com.xikra.staybooker.util.AddressCreator;
+import com.xikra.staybooker.util.AddressDTOCreator;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
+import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.ArgumentMatchers.anyLong;
 
-@WebMvcTest(AddressController.class)
-@AutoConfigureMockMvc(addFilters = false)
-@ExtendWith(MockitoExtension.class)
-public class AddressControllerTest{
+@ExtendWith(SpringExtension.class)
+class AddressControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @InjectMocks
+    private AddressController addressController;
 
-    @MockBean
-    private AddressService addressService;
+    @Mock
+    private AddressMapper addressMapperMock;
 
-    @MockBean
-    private AddressMapper addressMapper;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    private AddressDTO addressDTO;
+    @Mock
+    private AddressService addressServiceMock;
 
     @BeforeEach
-    void init() {
-        addressDTO = AddressDTO.builder()
-                .street("Rua das maravilhas milagrosas")
-                .number("35 C")
-                .city("Canareiros")
-                .state("RJ")
-                .zipcode("72830170")
-                .build();
+    void setUp() {
+        PageImpl<Address> addressPage = new PageImpl<>(List.of(AddressCreator.createdValidAddress()));
+        BDDMockito.when(addressServiceMock.getAllAddress(any(),any(),any(),any())).thenReturn(addressPage);
+
+        PageImpl<AddressDTO> addressDTOPage = new PageImpl<>(List.of(AddressDTOCreator.createdValidAddressDTO()));
+        BDDMockito.when(addressMapperMock.toDTOPage(any())).thenReturn(addressDTOPage);
+
+        BDDMockito.when(addressServiceMock.getAddresById(1L)).thenReturn(Optional.ofNullable(AddressCreator.createdValidAddress()));
+
+        BDDMockito.when(addressServiceMock.createAddress(any(Address.class))).thenReturn(AddressCreator.createdValidAddress());
+
+        BDDMockito.when(addressServiceMock.updateAddress(anyLong(), any(Address.class))).thenReturn(AddressCreator.createdValidUpdatedAddress());
+
+        BDDMockito.when(addressServiceMock.deleteAddress(1L)).thenReturn(true);
+
+        BDDMockito.when(addressServiceMock.addressPatch(anyLong(),any(Address.class))).thenReturn(AddressCreator.createdValidUpdatedAddress());
     }
 
     @Test
-    public void testCreateAddress_ReturnsCreatedStatus() throws Exception {
+    @DisplayName("List return list of address inside page object when successful")
+    void list_ReturnsListOfAddressInsidePageObject_WhenSuccessful(){
+        String expectedStreet = AddressCreator.createdValidAddress().getStreet();
 
-        given(addressService.createAddress(any())).willAnswer(invocation -> invocation.getArgument(0));
-        given(addressMapper.toEntity(any(AddressDTO.class))).willReturn(new Address());
-        given(addressMapper.toDTO(any(Address.class))).willReturn(addressDTO);
+        ResponseEntity<Page<AddressDTO>> response = addressController.getAllAddress(null, null, null,null);
 
-        ResultActions response = mockMvc.perform(post("/staybooker/addresses")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(addressDTO)));
-
-        response.andExpect(status().isCreated());
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().toList()).isNotEmpty().hasSize(1);
+        assertThat(response.getBody().toList().get(0).getStreet()).isEqualTo(expectedStreet);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
-    public void testCreateAddress_ReturnsBadRequestStatus() throws Exception{
-        addressDTO.setZipcode("7282017");
-        addressDTO.setState("RJDF");
+    @DisplayName("Find by id returns address when successful")
+    void findById_ReturnsAddress_WhenSuccessful(){
+        Long expectedId = AddressDTOCreator.createdValidAddressDTO().getId();
 
-        given(addressService.createAddress(any())).willAnswer(invocation -> invocation.getArgument(0));
-        given(addressMapper.toEntity(any(AddressDTO.class))).willReturn(new Address());
-        given(addressMapper.toDTO(any(Address.class))).willReturn(addressDTO);
+        BDDMockito.when(addressMapperMock.toDTO(any())).thenReturn(AddressDTOCreator.createdValidAddressDTO());
 
-        ResultActions response = mockMvc.perform(post("/staybooker/addresses")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(addressDTO)));
+        ResponseEntity<AddressDTO> response = addressController.getAddressById(1L);
 
-        response.andExpect(status().isBadRequest());
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getId()).isNotNull().isEqualTo(expectedId);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    /*
+    @Test
+    @DisplayName("Find by id Not Found Address throws NotFoundException")
+    void findById_NotFoundAddress_ThrowsNotFoundException(){
+        Long expectedId = AddressDTOCreator.createdValidAddressDTO().getId();
+
+        BDDMockito.when(addressServiceMock.getAddresById(1L)).thenReturn(null);
+
+        assertThatException().isThrownBy((ThrowableAssert.ThrowingCallable) addressController.getAddressById(1L));
+    }
+     */
+
+
+    @Test
+    @DisplayName("save returns address when successful")
+    void save_ReturnsAddress_WhenSuccessful(){
+
+        BDDMockito.when(addressMapperMock.toEntity(any(AddressDTO.class))).thenReturn(AddressCreator.createAddressToBeSaved());
+        BDDMockito.when(addressMapperMock.toDTO(any(Address.class))).thenReturn(AddressDTOCreator.createdValidAddressDTO());
+
+        ResponseEntity<AddressDTO> response = addressController.createAddress(AddressDTOCreator.post_AddressDTO());
+
+        assertThat(response.getBody()).isNotNull().isEqualTo(AddressDTOCreator.createdValidAddressDTO());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
+
+    @Test
+    @DisplayName("update returns address when successful")
+    void update_ReturnAddress_WhenSuccessful(){
+        String expectedStreetUpdated = AddressDTOCreator.put_AddressDTO().getStreet();
+
+        BDDMockito.when(addressMapperMock.toEntity(any(AddressDTO.class))).thenReturn(AddressCreator.createdValidAddress());
+        BDDMockito.when(addressMapperMock.toDTO(any(Address.class))).thenReturn(AddressDTOCreator.createdValidUpdatedAddressDTO());
+
+        assertThatCode(() -> addressController.updateAddress(1L , AddressDTOCreator.put_AddressDTO()))
+                .doesNotThrowAnyException();
+
+        ResponseEntity<AddressDTO> response = addressController.updateAddress(1L , AddressDTOCreator.put_AddressDTO());
+
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getStreet()).isEqualTo(expectedStreetUpdated);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    @DisplayName("delete remove address when successful")
+    void delete_RemovesAddress_WhenSuccessful(){
+
+        assertThatCode(() -> addressController.deleteAddress(1L ))
+                .doesNotThrowAnyException();
+
+        ResponseEntity<Void> response = addressController.deleteAddress(1L );
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
+    @Test
+    @DisplayName("patch returns address when successful")
+    void patch_ReturnAddress_WhenSuccessful(){
+        String expectedStreetUpdated = AddressDTOCreator.put_AddressDTO().getStreet();
+
+        BDDMockito.when(addressMapperMock.toEntity(any(AddressDTO.class))).thenReturn(AddressCreator.createdValidAddress());
+        BDDMockito.when(addressMapperMock.toDTO(any(Address.class))).thenReturn(AddressDTOCreator.createdValidUpdatedAddressDTO());
+
+        assertThatCode(() -> addressController.addressPatch(1L , AddressDTOCreator.patch_AddressDTO()))
+                .doesNotThrowAnyException();
+
+        ResponseEntity<AddressDTO> response = addressController.addressPatch(1L , AddressDTOCreator.patch_AddressDTO());
+
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getStreet()).isEqualTo(expectedStreetUpdated);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }

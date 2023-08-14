@@ -19,4 +19,5 @@ public interface AddressService {
     boolean deleteAddress(Long id);
 
     Address addressPatch(Long id, Address address);
+
 }
