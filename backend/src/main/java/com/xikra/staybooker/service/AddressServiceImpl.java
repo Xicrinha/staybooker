@@ -4,17 +4,19 @@ import com.xikra.staybooker.domain.Address;
 import com.xikra.staybooker.exceptions.NotFoundException;
 import com.xikra.staybooker.repository.AddressRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Service
 @RequiredArgsConstructor
 public class AddressServiceImpl implements AddressService {
+
 
     private final AddressRepository addressRepository;
 
@@ -31,14 +33,16 @@ public class AddressServiceImpl implements AddressService {
         Page<Address> page;
 
         if(StringUtils.hasText(city) && !StringUtils.hasText(state)){
-            return addressRepository.findByCity(city);
+            page = addressRepository.findAllByCityIsLikeIgnoreCase(city, pageRequest);
         }else if(!StringUtils.hasText(city) && StringUtils.hasText(state)){
-            return addressRepository.findByState(state);
+            page = addressRepository.findAllByState(state, pageRequest);
         }else if(StringUtils.hasText(city) && StringUtils.hasText(state)){
-            return addressRepository.findByCityAndState(city, state);
+            page = addressRepository.findAllByCityIsLikeIgnoreCaseAndState(city, state, pageRequest);
         }else {
-            return addressRepository.findAll(pageRequest);
+            page = addressRepository.findAll(pageRequest);
         }
+
+        return page;
     }
 
     private PageRequest buildPageRequest(Integer pageNumber, Integer pageSize){

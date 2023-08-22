@@ -3,6 +3,9 @@ package com.xikra.staybooker.util;
 import com.xikra.staybooker.domain.Address;
 import com.xikra.staybooker.model.AddressDTO;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AddressCreator {
 
     public static Address createAddressToBeSaved(){
@@ -35,5 +38,15 @@ public class AddressCreator {
                 .state("RJ")
                 .zipcode("72830170")
                 .build();
+    }
+
+    public static List<Address> listCreatedValidAddress(){
+        List<Address> addressList = new ArrayList<>();
+
+        for(int i = 0; i < 5; i ++){
+            addressList.add(createdValidAddress());
+        }
+
+        return addressList;
     }
 }

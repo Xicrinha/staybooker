@@ -45,8 +45,8 @@ class AddressControllerTest {
     private AddressService addressServiceMock;
 
     @Test
-    @DisplayName("List return list of address inside page object when successful")
-    void list_ReturnsListOfAddressInsidePageObject_WhenSuccessful() throws Exception {
+    @DisplayName("getAllAddress return list of address inside page object when successful")
+    void getAllAddress_ReturnsListOfAddressInsidePageObject_WhenSuccessful() throws Exception {
 
         Page<Address> addressPage = new PageImpl<>(List.of(AddressCreator.createdValidAddress()));
         BDDMockito.when(addressServiceMock.getAllAddress(any(), any(), any(), any())).thenReturn(addressPage);
