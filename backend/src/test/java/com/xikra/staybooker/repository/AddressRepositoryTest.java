@@ -1,7 +1,7 @@
 package com.xikra.staybooker.repository;
 
 import com.xikra.staybooker.domain.Address;
-import com.xikra.staybooker.util.AddressCreator;
+import com.xikra.staybooker.util.entityCreator.AddressCreator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,8 +46,19 @@ class AddressRepositoryTest {
 
         Optional<Address> response = addressRepository.findById(savedAddress.getId());
 
-        assertThat(response).isPresent(); // Verifica se o Optional contém um valor
+        assertThat(response).isPresent();
         assertThat(response.get().getId()).isEqualTo(savedAddress.getId());
+    }
+    @Test
+    @DisplayName("test findByZipcode method")
+    void test_findByZipcode(){
+        Address addressToBeSaved = AddressCreator.createAddressToBeSaved();
+        Address savedAddress = testEntityManager.persistAndFlush(addressToBeSaved);
+
+        Optional<Address> response = addressRepository.findByZipcode("72830170");
+
+        assertThat(response).isPresent();
+        assertThat(response.get().getZipcode()).isEqualTo(savedAddress.getZipcode());
     }
 
 

@@ -37,6 +37,14 @@ public class AddressController {
         return new ResponseEntity<>(addressDTOPage,HttpStatus.OK);
     }
 
+    @GetMapping("/zipcode")
+    public ResponseEntity<AddressDTO> getAddressByZipcode(@RequestParam(required = false)String zipcode){
+        AddressDTO addressDTO = addressService.getAddressByZipcode(zipcode)
+                .map(addressMapper::toDTO)
+                .orElseThrow(NotFoundException::new);
+        return new ResponseEntity<>(addressDTO,HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<AddressDTO> getAddressById(@PathVariable("id") Long id){
         AddressDTO addressDTO = addressService.getAddresById(id)

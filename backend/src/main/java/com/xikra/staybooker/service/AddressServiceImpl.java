@@ -116,4 +116,9 @@ public class AddressServiceImpl implements AddressService {
 
         return addressRepository.save(existingAddress);
     }
+
+    @Override
+    public Optional<Address> getAddressByZipcode(String zipcode) {
+        return addressRepository.findByZipcode(zipcode);
+    }
 }

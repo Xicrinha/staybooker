@@ -5,9 +5,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface AddressRepository extends JpaRepository<Address, Long> {
 
     Page<Address> findAllByCityIsLikeIgnoreCase(String city, PageRequest pageRequest);
     Page<Address> findAllByState(String state, PageRequest pageRequest);
     Page<Address> findAllByCityIsLikeIgnoreCaseAndState(String city, String state, PageRequest pageRequest);
+    Optional<Address> findByZipcode(String zipcode);
 }

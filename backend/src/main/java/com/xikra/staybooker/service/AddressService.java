@@ -20,4 +20,5 @@ public interface AddressService {
 
     Address addressPatch(Long id, Address address);
 
+    Optional<Address> getAddressByZipcode(String zipcode);
 }

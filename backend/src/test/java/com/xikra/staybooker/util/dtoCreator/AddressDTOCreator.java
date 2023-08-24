@@ -1,4 +1,4 @@
-package com.xikra.staybooker.util;
+package com.xikra.staybooker.util.dtoCreator;
 
 import com.xikra.staybooker.domain.Address;
 import com.xikra.staybooker.model.AddressDTO;

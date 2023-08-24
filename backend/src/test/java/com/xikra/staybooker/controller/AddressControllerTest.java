@@ -5,8 +5,8 @@ import com.xikra.staybooker.domain.Address;
 import com.xikra.staybooker.mapper.AddressMapper;
 import com.xikra.staybooker.model.AddressDTO;
 import com.xikra.staybooker.service.AddressService;
-import com.xikra.staybooker.util.AddressCreator;
-import com.xikra.staybooker.util.AddressDTOCreator;
+import com.xikra.staybooker.util.entityCreator.AddressCreator;
+import com.xikra.staybooker.util.dtoCreator.AddressDTOCreator;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -61,7 +61,20 @@ class AddressControllerTest {
                 .andExpect(jsonPath("$.content.size()", CoreMatchers.is(1)));
     }
 
+    @Test
+    @DisplayName("getAddressByZipcode returns address by zipcode when successful")
+    void getAddressByZipcode_ReturnsAddressByZipcode_WhenSuccessfull() throws Exception {
+        String expectedZipcode = AddressCreator.createdValidAddress().getZipcode();
 
+        BDDMockito.when(addressServiceMock.getAddressByZipcode("72830170")).thenReturn(Optional.of(AddressCreator.createdValidAddress()));
+        BDDMockito.when(addressMapperMock.toDTO(any())).thenReturn(AddressDTOCreator.createdValidAddressDTO());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/staybooker/addresses/zipcode")
+                .param("zipcode", expectedZipcode)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath(".zipcode").value(expectedZipcode));
+    }
 
     @Test
     @DisplayName("Find by id returns address when successful")
