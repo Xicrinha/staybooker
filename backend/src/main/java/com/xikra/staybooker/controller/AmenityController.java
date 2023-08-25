@@ -5,7 +5,6 @@ import com.xikra.staybooker.exceptions.NotFoundException;
 import com.xikra.staybooker.mapper.AmenityMapper;
 import com.xikra.staybooker.model.AmenityDTO;
 import com.xikra.staybooker.service.AmenityService;
-import com.xikra.staybooker.service.AmenityServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

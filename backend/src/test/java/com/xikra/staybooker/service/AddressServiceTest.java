@@ -2,8 +2,7 @@ package com.xikra.staybooker.service;
 
 import com.xikra.staybooker.domain.Address;
 import com.xikra.staybooker.repository.AddressRepository;
-import com.xikra.staybooker.util.AddressCreator;
-import lombok.extern.log4j.Log4j;
+import com.xikra.staybooker.util.entityCreator.AddressCreator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-@Log4j
 class AddressServiceTest {
 
     @Mock
@@ -34,10 +32,6 @@ class AddressServiceTest {
 
     @InjectMocks
     AddressServiceImpl addressService;
-
-    @BeforeEach
-    void setUp() {
-    }
 
     @Test
     @DisplayName("getAllAddress no Param return list of address inside page object when successful")
@@ -129,6 +123,19 @@ class AddressServiceTest {
 
         assertThat(response).isNotNull();
         assertThat(response.get().getId()).isEqualTo(expectedId);
+    }
+
+    @Test
+    @DisplayName("Find by Zipcode returns address when successful")
+    void findByZipcode_ReturnsAddress_WhenSuccessful(){
+        String expectedZipcode = AddressCreator.createdValidAddress().getZipcode();
+
+        when(addressRepository.findByZipcode("72830170")).thenReturn(Optional.of(AddressCreator.createdValidAddress()));
+
+        Optional<Address> response = addressService.getAddressByZipcode("72830170");
+
+        assertThat(response).isNotNull();
+        assertThat(response.get().getZipcode()).isEqualTo(expectedZipcode);
     }
 
     @Test
