@@ -114,7 +114,7 @@ class AddressServiceTest {
 
     @Test
     @DisplayName("Find by id returns address when successful")
-    void findById_ReturnsAddress_WhenSuccessful(){
+        void findById_ReturnsAddress_WhenSuccessful(){
         Long expectedId = AddressCreator.createdValidAddress().getId();
 
         when(addressRepository.findById(1L)).thenReturn(Optional.ofNullable(AddressCreator.createdValidAddress()));
