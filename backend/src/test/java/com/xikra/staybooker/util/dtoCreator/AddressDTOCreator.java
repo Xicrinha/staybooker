@@ -24,35 +24,4 @@ public class AddressDTOCreator {
                 .zipcode("72830170")
                 .build();
     }
-
-    public static AddressDTO createdValidUpdatedAddressDTO(){
-        return AddressDTO.builder()
-                .id(1L)
-                .street("Rua das maravilhas incriveis")
-                .number("31 D")
-                .city("Canareiros")
-                .state("RJ")
-                .zipcode("72830170")
-                .build();
-    }
-
-    public static AddressDTO put_AddressDTO(){
-        return AddressDTO.builder()
-                .street("Rua das maravilhas incriveis")
-                .number("31 D")
-                .city("Canareiros")
-                .state("RJ")
-                .zipcode("72830170")
-                .build();
-    }
-
-    public static AddressDTO patch_AddressDTO(){
-        return AddressDTO.builder()
-                .street("Rua das maravilhas incriveis")
-                .number(null)
-                .city(null)
-                .state(null)
-                .zipcode(null)
-                .build();
-    }
 }

@@ -29,17 +29,6 @@ public class AddressCreator {
                 .build();
     }
 
-    public static Address createdValidUpdatedAddress(){
-        return Address.builder()
-                .id(1L)
-                .street("Rua das maravilhas incriveis")
-                .number("31 D")
-                .city("Canareiros")
-                .state("RJ")
-                .zipcode("72830170")
-                .build();
-    }
-
     public static List<Address> listCreatedValidAddress(){
         List<Address> addressList = new ArrayList<>();
 

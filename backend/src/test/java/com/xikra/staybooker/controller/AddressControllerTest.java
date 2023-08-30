@@ -47,18 +47,20 @@ class AddressControllerTest {
     @Test
     @DisplayName("getAllAddress return list of address inside page object when successful")
     void getAllAddress_ReturnsListOfAddressInsidePageObject_WhenSuccessful() throws Exception {
+        AddressDTO addressDTO1 = AddressDTOCreator.createdValidAddressDTO();
+        AddressDTO addressDTO2 = AddressDTOCreator.createdValidAddressDTO();
+        AddressDTO addressDTO3 = AddressDTOCreator.createdValidAddressDTO();
 
-        Page<Address> addressPage = new PageImpl<>(List.of(AddressCreator.createdValidAddress()));
-        BDDMockito.when(addressServiceMock.getAllAddress(any(), any(), any(), any())).thenReturn(addressPage);
+        BDDMockito.when(addressServiceMock.getAllAddress(any(), any(), any(), any())).thenReturn(new PageImpl<>(List.of()));
 
-        Page<AddressDTO> addressDTOPage = new PageImpl<>(List.of(AddressDTOCreator.createdValidAddressDTO()));
+        Page<AddressDTO> addressDTOPage = new PageImpl<>(List.of(addressDTO1, addressDTO2, addressDTO3));
         BDDMockito.when(addressMapperMock.toDTOPage(any(Page.class))).thenReturn(addressDTOPage);
 
 
         mockMvc.perform(get("/staybooker/addresses")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.content.size()", CoreMatchers.is(1)));
+                .andExpect(jsonPath("$.content.size()", CoreMatchers.is(3)));
     }
 
     @Test
@@ -150,15 +152,21 @@ class AddressControllerTest {
     @Test
     @DisplayName("update returns address when successful")
     void update_ReturnAddress_WhenSuccessful() throws Exception {
-        String expectedStreetUpdated = AddressDTOCreator.put_AddressDTO().getStreet();
+        String expectedStreetUpdated = "rua das clareiras";
 
-        BDDMockito.when(addressServiceMock.updateAddress(anyLong(), any(Address.class))).thenReturn(AddressCreator.createdValidUpdatedAddress());
+        AddressDTO put_addressDTO = AddressDTOCreator.post_AddressDTO();
+        put_addressDTO.setStreet(expectedStreetUpdated);
+
+        AddressDTO createdValidUpdatedAddressDTO = AddressDTOCreator.createdValidAddressDTO();
+        createdValidUpdatedAddressDTO.setStreet(expectedStreetUpdated);
+
+        BDDMockito.when(addressServiceMock.updateAddress(anyLong(), any(Address.class))).thenReturn(new Address());
 
         BDDMockito.when(addressMapperMock.toEntity(any(AddressDTO.class))).thenReturn(AddressCreator.createdValidAddress());
-        BDDMockito.when(addressMapperMock.toDTO(any(Address.class))).thenReturn(AddressDTOCreator.createdValidUpdatedAddressDTO());
+        BDDMockito.when(addressMapperMock.toDTO(any(Address.class))).thenReturn(createdValidUpdatedAddressDTO);
 
         mockMvc.perform(put("/staybooker/addresses/{id}", 1)
-                .content(asJsonString(AddressDTOCreator.put_AddressDTO()))
+                .content(asJsonString(put_addressDTO))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -178,15 +186,21 @@ class AddressControllerTest {
     @Test
     @DisplayName("patch returns address when successful")
     void patch_ReturnAddress_WhenSuccessful() throws Exception {
-        String expectedStreetUpdated = AddressDTOCreator.put_AddressDTO().getStreet();
+        String expectedStreetUpdated = "rua das clareiras";
 
-        BDDMockito.when(addressServiceMock.addressPatch(anyLong(),any(Address.class))).thenReturn(AddressCreator.createdValidUpdatedAddress());
+        AddressDTO patch_AddressDTO = AddressDTOCreator.post_AddressDTO();
+        patch_AddressDTO.setStreet(expectedStreetUpdated);
+
+        AddressDTO createdValidUpdatedAddressDTO = AddressDTOCreator.createdValidAddressDTO();
+        createdValidUpdatedAddressDTO.setStreet(expectedStreetUpdated);
+
+        BDDMockito.when(addressServiceMock.addressPatch(anyLong(),any(Address.class))).thenReturn(new Address());
 
         BDDMockito.when(addressMapperMock.toEntity(any(AddressDTO.class))).thenReturn(AddressCreator.createdValidAddress());
-        BDDMockito.when(addressMapperMock.toDTO(any(Address.class))).thenReturn(AddressDTOCreator.createdValidUpdatedAddressDTO());
+        BDDMockito.when(addressMapperMock.toDTO(any(Address.class))).thenReturn(createdValidUpdatedAddressDTO);
 
         mockMvc.perform(patch("/staybooker/addresses/{id}", 1)
-                        .content(asJsonString(AddressDTOCreator.patch_AddressDTO()))
+                        .content(asJsonString(patch_AddressDTO))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk())
