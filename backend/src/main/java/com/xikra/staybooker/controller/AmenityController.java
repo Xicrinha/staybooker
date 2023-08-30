@@ -30,10 +30,7 @@ public class AmenityController {
 
     @GetMapping
     public ResponseEntity<List<AmenityDTO>> getAllAmenities(){
-        List<AmenityDTO> amenityDTOList = amenityService.getAllAmenities()
-                .stream()
-                .map(amenityMapper::toDTO)
-                .collect(Collectors.toList());
+        List<AmenityDTO> amenityDTOList = amenityMapper.toDTOList(amenityService.getAllAmenities());
         return new ResponseEntity<>(amenityDTOList, HttpStatus.OK);
     }
 
