@@ -22,8 +22,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -44,21 +43,19 @@ class AmenityControllerTest {
     @Test
     @DisplayName("getAllAmenities returns list of amenity inside page object when successful")
     void getAllAmenities_ReturnsListAmenityInsidePageObject_WhenSuccessful() throws Exception {
-        Amenity amenity = Amenity.builder()
-                .id(1L)
-                .name("wi-fi")
-                .build();
 
-        BDDMockito.when(amenityService.getAllAmenities()).thenReturn(List.of(amenity));
+        BDDMockito.when(amenityService.getAllAmenities()).thenReturn(List.of());
 
-        AmenityDTO amenityDTO = AmenityDTO.builder().id(1L).name("wi-fi").build();
-        BDDMockito.when(amenityMapper.toDTO(any(Amenity.class))).thenReturn(amenityDTO);
+        AmenityDTO amenityDTO1 = AmenityDTO.builder().id(1L).name("wi-fi").build();
+        AmenityDTO amenityDTO2 = AmenityDTO.builder().id(2L).name("piscina").build();
+        AmenityDTO amenityDTO3 = AmenityDTO.builder().id(3L).name("tv a cabo").build();
+        BDDMockito.when(amenityMapper.toDTOList(any())).thenReturn(List.of(amenityDTO1, amenityDTO2, amenityDTO3));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/staybooker/amenities")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()", CoreMatchers.is(1)));
+                .andExpect(jsonPath("$.size()", CoreMatchers.is(3)));
 
     }
 

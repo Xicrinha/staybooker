@@ -1,14 +1,13 @@
 package com.xikra.staybooker.controller;
 
-import com.xikra.staybooker.domain.Address;
 import com.xikra.staybooker.domain.Guest;
 import com.xikra.staybooker.exceptions.NotFoundException;
 import com.xikra.staybooker.mapper.GuestMapper;
-import com.xikra.staybooker.model.AddressDTO;
 import com.xikra.staybooker.model.GuestDTO;
 import com.xikra.staybooker.service.GuestService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,11 +30,9 @@ public class GuestController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GuestDTO>> getAllGuests(){
-        List<GuestDTO> guestDTOList = guestService.getAllGuests()
-                .stream()
-                .map(guestMapper::toDTO)
-                .collect(Collectors.toList());
+    public ResponseEntity<Page<GuestDTO>> getAllGuests(@RequestParam(required = false) Integer pageNumber,
+                                                       @RequestParam(required = false) Integer pageSize){
+        Page<GuestDTO> guestDTOList = guestMapper.toDTOPage(guestService.getAllGuests(pageNumber,pageSize));
         return new ResponseEntity<>(guestDTOList, HttpStatus.OK);
     }
 
