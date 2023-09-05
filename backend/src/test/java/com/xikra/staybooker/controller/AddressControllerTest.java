@@ -81,7 +81,6 @@ class AddressControllerTest {
     @Test
     @DisplayName("Find by id returns address when successful")
     void findById_ReturnsAddress_WhenSuccessful() throws Exception {
-        Long expectedId = AddressDTOCreator.createdValidAddressDTO().getId();
 
         BDDMockito.when(addressServiceMock.getAddresById(1L)).thenReturn(Optional.ofNullable(AddressCreator.createdValidAddress()));
         BDDMockito.when(addressMapperMock.toDTO(any())).thenReturn(AddressDTOCreator.createdValidAddressDTO());
@@ -115,7 +114,7 @@ class AddressControllerTest {
         BDDMockito.when(addressMapperMock.toDTO(any(Address.class))).thenReturn(AddressDTOCreator.createdValidAddressDTO());
 
         mockMvc.perform(post("/staybooker/addresses")
-                .content(asJsonString(AddressDTOCreator.post_AddressDTO()))
+                .content(asJsonString(AddressDTOCreator.create_AddressDTO()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
@@ -134,7 +133,7 @@ class AddressControllerTest {
 
     @Test
     @DisplayName("save throws Bad Request Exception When All fields is empty")
-    void save_ThrowsBadRequestException_WhenStreetIsEmpty() throws Exception {
+    void save_ThrowsBadRequestException_WhenAllFieldsIsEmpty() throws Exception {
         BDDMockito.when(addressServiceMock.createAddress(any(Address.class))).thenReturn(new Address());
 
         BDDMockito.when(addressMapperMock.toEntity(any(AddressDTO.class))).thenReturn(new Address());
@@ -154,7 +153,7 @@ class AddressControllerTest {
     void update_ReturnAddress_WhenSuccessful() throws Exception {
         String expectedStreetUpdated = "rua das clareiras";
 
-        AddressDTO put_addressDTO = AddressDTOCreator.post_AddressDTO();
+        AddressDTO put_addressDTO = AddressDTOCreator.create_AddressDTO();
         put_addressDTO.setStreet(expectedStreetUpdated);
 
         AddressDTO createdValidUpdatedAddressDTO = AddressDTOCreator.createdValidAddressDTO();
@@ -162,7 +161,7 @@ class AddressControllerTest {
 
         BDDMockito.when(addressServiceMock.updateAddress(anyLong(), any(Address.class))).thenReturn(new Address());
 
-        BDDMockito.when(addressMapperMock.toEntity(any(AddressDTO.class))).thenReturn(AddressCreator.createdValidAddress());
+        BDDMockito.when(addressMapperMock.toEntity(any(AddressDTO.class))).thenReturn(new Address());
         BDDMockito.when(addressMapperMock.toDTO(any(Address.class))).thenReturn(createdValidUpdatedAddressDTO);
 
         mockMvc.perform(put("/staybooker/addresses/{id}", 1)
@@ -188,7 +187,7 @@ class AddressControllerTest {
     void patch_ReturnAddress_WhenSuccessful() throws Exception {
         String expectedStreetUpdated = "rua das clareiras";
 
-        AddressDTO patch_AddressDTO = AddressDTOCreator.post_AddressDTO();
+        AddressDTO patch_AddressDTO = new AddressDTO();
         patch_AddressDTO.setStreet(expectedStreetUpdated);
 
         AddressDTO createdValidUpdatedAddressDTO = AddressDTOCreator.createdValidAddressDTO();

@@ -5,7 +5,7 @@ import com.xikra.staybooker.model.AddressDTO;
 
 public class AddressDTOCreator {
 
-    public static AddressDTO post_AddressDTO(){
+    public static AddressDTO create_AddressDTO(){
         return AddressDTO.builder()
                 .street("Rua das maravilhas milagrosas")
                 .number("31 D")
