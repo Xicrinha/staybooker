@@ -7,6 +7,7 @@ import com.xikra.staybooker.model.HotelDTO;
 import com.xikra.staybooker.service.HotelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -31,12 +32,10 @@ public class HotelController {
     }
 
     @GetMapping
-    public ResponseEntity<List<HotelDTO>> gettAllHotel(){
-        List<HotelDTO> hotelDTOList = hotelService.gettAllHotel()
-                .stream()
-                .map(hotelMapper::toDTO)
-                .collect(Collectors.toList());
-        return new ResponseEntity<>(hotelDTOList, HttpStatus.OK);
+    public ResponseEntity<Page<HotelDTO>> gettAllHotel(@RequestParam(required = false) Integer pageNumber,
+                                                       @RequestParam(required = false) Integer pageSize){
+        Page<HotelDTO> hotelDTOPage = hotelMapper.toDTOPage(hotelService.getAllHotel(pageNumber, pageSize));
+        return new ResponseEntity<>(hotelDTOPage, HttpStatus.OK);
     }
 
 

@@ -8,8 +8,12 @@ import com.xikra.staybooker.model.ImageDTO;
 import com.xikra.staybooker.model.RoomDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Mapper
@@ -118,4 +122,23 @@ public interface HotelMapper {
         return set1;
     }
 
+    default Page<HotelDTO> toDTOPage(Page<Hotel> hotelPage){
+        List<HotelDTO> hotelDTOList = new ArrayList<>();
+
+        for(Hotel hotel: hotelPage){
+            hotelDTOList.add(toDTO(hotel));
+        }
+
+        return new PageImpl<>(hotelDTOList);
+    }
+
+    default Page<Hotel> toEntityPage(Page<HotelDTO> hotelDTOPage){
+        List<Hotel> hotelList = new ArrayList<>();
+
+        for(HotelDTO hotelDTO : hotelDTOPage){
+            hotelList.add(toEntity(hotelDTO));
+        }
+
+        return new PageImpl<>(hotelList);
+    }
 }
