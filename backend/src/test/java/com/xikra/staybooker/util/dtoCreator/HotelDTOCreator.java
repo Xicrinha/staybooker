@@ -21,7 +21,7 @@ public class HotelDTOCreator {
                 .build();
     }
 
-    public static HotelDTO createdValidGuestDTO(){
+    public static HotelDTO createdValidHotelDTO(){
         return HotelDTO.builder()
                 .id(1L)
                 .name("Hotel Plaza")

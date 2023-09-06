@@ -132,8 +132,8 @@ class AddressControllerTest {
 
 
     @Test
-    @DisplayName("save throws Bad Request Exception When All fields is empty")
-    void save_ThrowsBadRequestException_WhenAllFieldsIsEmpty() throws Exception {
+    @DisplayName("save throws Bad Request Exception When All fields are empty")
+    void save_ThrowsBadRequestException_WhenAllFieldsAreEmpty() throws Exception {
         BDDMockito.when(addressServiceMock.createAddress(any(Address.class))).thenReturn(new Address());
 
         BDDMockito.when(addressMapperMock.toEntity(any(AddressDTO.class))).thenReturn(new Address());

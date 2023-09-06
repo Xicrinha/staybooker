@@ -75,7 +75,7 @@ class GuestControllerTest {
     }
 
     @Test
-    @DisplayName("findById Not Guest found throws NotFoundException")
+    @DisplayName("findById Not found Guest throws NotFoundException")
     void findById_NotFoundGuest_ThrowsNotFoundException() throws Exception {
         BDDMockito.when(guestService.getGuestById(1L)).thenReturn(Optional.empty());
 
@@ -109,8 +109,8 @@ class GuestControllerTest {
     }
 
     @Test
-    @DisplayName("save throws BadRequestException when all fields is empty")
-    void save_ThrowBadRequestException_WhenAllFieldsIsEmpty() throws Exception {
+    @DisplayName("save throws BadRequestException when all fields are empty")
+    void save_ThrowBadRequestException_WhenAllFieldsAreEmpty() throws Exception {
         BDDMockito.when(guestService.createGuest(any(Guest.class))).thenReturn(new Guest());
 
         BDDMockito.when(guestMapper.toDTO(any(Guest.class))).thenReturn(new GuestDTO());
@@ -161,19 +161,19 @@ class GuestControllerTest {
     void patch_ReturnGuest_WhenSuccessful() throws Exception {
         String expectedNumberUpdated = "(61) 99356-8712";
 
-        GuestDTO put_GuestDTO = GuestDTOCreator.create_GuestDTO();
-        put_GuestDTO.setPhoneNumber(expectedNumberUpdated);
+        GuestDTO patch_GuestDTO = new GuestDTO();
+        patch_GuestDTO.setPhoneNumber(expectedNumberUpdated);
 
-        GuestDTO createdValidUpdatedGuestDTO = new GuestDTO();
+        GuestDTO createdValidUpdatedGuestDTO = GuestDTOCreator.createdValidGuestDTO();
         createdValidUpdatedGuestDTO.setPhoneNumber(expectedNumberUpdated);
 
-        BDDMockito.when(guestService.updateGuest(any(Guest.class), anyLong())).thenReturn(new Guest());
+        BDDMockito.when(guestService.guestPatch(anyLong(), any(Guest.class))).thenReturn(new Guest());
 
         BDDMockito.when(guestMapper.toDTO(any(Guest.class))).thenReturn(createdValidUpdatedGuestDTO);
         BDDMockito.when(guestMapper.toEntity(any(GuestDTO.class))).thenReturn(new Guest());
 
-        mockMvc.perform(put("/staybooker/guests/{id}", 1)
-                .content(asJsonString(put_GuestDTO))
+        mockMvc.perform(patch("/staybooker/guests/{id}", 1)
+                .content(asJsonString(patch_GuestDTO))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

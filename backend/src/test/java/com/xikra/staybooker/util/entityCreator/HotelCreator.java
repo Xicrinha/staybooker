@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class HotelCreator {
 
-    public static Hotel create_HotelDTO(){
+    public static Hotel create_Hotel(){
         return Hotel.builder()
                 .name("Hotel Plaza")
                 .address(AddressCreator.createAddressToBeSaved())
@@ -21,7 +21,7 @@ public class HotelCreator {
                 .build();
     }
 
-    public static Hotel createdValidGuestDTO(){
+    public static Hotel createdValidHotel(){
         return Hotel.builder()
                 .name("Hotel Plaza")
                 .address(AddressCreator.createdValidAddress())
@@ -35,7 +35,7 @@ public class HotelCreator {
         List<Hotel> hotelList = new ArrayList<>();
 
         for(int i = 0; i < 0; i++){
-            hotelList.add(createdValidGuestDTO());
+            hotelList.add(createdValidHotel());
         }
 
         return  hotelList;
