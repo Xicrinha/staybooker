@@ -23,6 +23,7 @@ public class HotelCreator {
 
     public static Hotel createdValidHotel(){
         return Hotel.builder()
+                .id(1L)
                 .name("Hotel Plaza")
                 .address(AddressCreator.createdValidAddress())
                 .description("O melhor Hotel da America latina")
