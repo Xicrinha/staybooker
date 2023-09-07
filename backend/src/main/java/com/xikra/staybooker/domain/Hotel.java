@@ -44,6 +44,9 @@ public class Hotel implements Serializable {
     private Set<Image> images = new HashSet<>();
 
     public void addAmenitiy(Amenity amenity){
+        if (amenities == null) {
+            amenities = new HashSet<>();
+        }
         amenities.add(amenity);
     }
 

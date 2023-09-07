@@ -12,13 +12,13 @@ import java.util.Set;
 public class HotelCreator {
 
     public static Hotel create_Hotel(){
-        return Hotel.builder()
+        Hotel hotel = Hotel.builder()
                 .name("Hotel Plaza")
                 .address(AddressCreator.createAddressToBeSaved())
                 .description("O melhor Hotel da America latina")
                 .rating(5)
-                .amenities(Set.of(new Amenity(1L,"wi-fi")))
                 .build();
+        return hotel;
     }
 
     public static Hotel createdValidHotel(){
@@ -28,7 +28,6 @@ public class HotelCreator {
                 .address(AddressCreator.createdValidAddress())
                 .description("O melhor Hotel da America latina")
                 .rating(5)
-                .amenities(Set.of(new Amenity(1L,"wi-fi")))
                 .build();
     }
 
