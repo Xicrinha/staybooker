@@ -180,5 +180,18 @@ class GuestControllerTest {
                 .andExpect(jsonPath("$.phoneNumber").value(expectedNumberUpdated));
     }
 
+    @Test
+    @DisplayName("getAddressByZipcode returns guest by zipcode when successful")
+    void getAddressByZipcode_ReturnsGuestByZipcode_WhenSuccessfull() throws Exception {
+        String expectedZipcode = GuestCreator.createdValidGuest().getAddress().getZipcode();
 
+        BDDMockito.when(guestService.findByAddressZipcode("72830170")).thenReturn(Optional.of(GuestCreator.createdValidGuest()));
+        BDDMockito.when(guestMapper.toDTO(any())).thenReturn(GuestDTOCreator.createdValidGuestDTO());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/staybooker/guests/zipcode")
+                .param("zipcode", expectedZipcode)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.zipcode").value(expectedZipcode));
+    }
 }
