@@ -124,4 +124,17 @@ class GuestServiceTest {
         Assertions.assertThat(response.getId()).isEqualTo(1L);
         Assertions.assertThat(response.getPhoneNumber()).isEqualTo(expectedPhoneNumber);
     }
+
+    @Test
+    @DisplayName("findByZipcode returns guest when successful")
+    void findByZipcode_ReturnsGuest_WhenSuccessful(){
+        String expectedZipcode = GuestCreator.createdValidGuest().getAddress().getZipcode();
+
+        when(guestRepository.findByAddressZipcode(anyString())).thenReturn(Optional.of(GuestCreator.createdValidGuest()));
+
+        Optional<Guest> response = guestService.findByAddressZipcode(expectedZipcode);
+
+        Assertions.assertThat(response).isNotNull();
+        Assertions.assertThat(response.get().getAddress().getZipcode()).isEqualTo(expectedZipcode);
+    }
 }

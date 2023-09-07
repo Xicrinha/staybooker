@@ -19,4 +19,6 @@ public interface GuestService {
     public boolean deleteGuest(Long id);
 
     public Guest guestPatch(Long id, Guest guest);
+
+    public Optional<Guest> findByAddressZipcode(String zipcode);
 }

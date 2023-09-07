@@ -43,6 +43,14 @@ public class GuestController {
         return new ResponseEntity<>(guestDTO,HttpStatus.OK);
     }
 
+    @GetMapping("/zipcode")
+    public ResponseEntity<GuestDTO> getGuestByZipcode(@RequestParam(required = false) String zipcode){
+        GuestDTO guestDTO = guestService.findByAddressZipcode(zipcode)
+                .map(guestMapper::toDTO)
+                .orElseThrow(NotFoundException::new);
+        return new ResponseEntity<>(guestDTO, HttpStatus.OK);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<GuestDTO> updateGuest(@RequestBody @Valid GuestDTO guestDTO,@PathVariable("id") Long id){
         Guest updatedGuest = guestService.updateGuest(guestMapper.toEntity(guestDTO), id);

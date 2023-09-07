@@ -1,16 +1,11 @@
 package com.xikra.staybooker.repository;
 
-import com.xikra.staybooker.domain.Address;
 import com.xikra.staybooker.domain.Guest;
-import com.xikra.staybooker.util.entityCreator.AddressCreator;
 import com.xikra.staybooker.util.entityCreator.GuestCreator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -18,18 +13,12 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 class GuestRepositoryTest {
 
     @Autowired
     private GuestRepository guestRepository;
-
-    @Autowired
-    private TestEntityManager testEntityManager;
-
 
     @Test
     @DisplayName("test save method")
@@ -43,15 +32,15 @@ class GuestRepositoryTest {
     }
 
     @Test
-    @DisplayName("test findById")
+    @DisplayName("test findById method")
     void test_findById(){
         Guest guestToBeSaved = GuestCreator.createGuestToBeSaved();
-        Guest savedGuest = testEntityManager.persistAndFlush(guestToBeSaved);
+        Guest savedGuest = guestRepository.save(guestToBeSaved);
 
-        Optional<Guest> response = guestRepository.findById(1L);
+        Optional<Guest> response = guestRepository.findById(savedGuest.getId());
 
-        assertThat(response).isNotNull();
-        assertThat(response.get().getId()).isEqualTo(1L);
+        assertThat(response).isPresent();
+        assertThat(response.get()).isNotNull();
     }
 
     @Test
@@ -78,6 +67,17 @@ class GuestRepositoryTest {
         assertThatCode(() -> guestRepository.deleteById(1L)).doesNotThrowAnyException();
     }
 
+    @Test
+    @DisplayName("test findByAddressZipcode method")
+    void test_findByAddressZipcode(){
+        Guest guestToBeSaved = GuestCreator.createGuestToBeSaved();
+        Guest savedGuest = guestRepository.save(guestToBeSaved);
 
+        Optional<Guest> response = guestRepository.findByAddressZipcode(savedGuest.getAddress().getZipcode());
+
+        assertThat(response).isPresent();
+        assertThat(response.get()).isNotNull();
+        assertThat(response.get().getAddress().getZipcode()).isEqualTo(savedGuest.getAddress().getZipcode());
+    }
 
 }

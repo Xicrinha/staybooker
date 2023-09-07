@@ -118,4 +118,9 @@ public class GuestServiceImpl implements GuestService{
 
         return guestRepository.save(existingGuest);
     }
+
+    @Override
+    public Optional<Guest> findByAddressZipcode(String zipcode) {
+        return guestRepository.findByAddressZipcode(zipcode);
+    }
 }
