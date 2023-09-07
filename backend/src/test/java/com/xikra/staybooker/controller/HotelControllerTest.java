@@ -5,7 +5,10 @@ import com.xikra.staybooker.domain.Hotel;
 import com.xikra.staybooker.mapper.HotelMapper;
 import com.xikra.staybooker.model.HotelDTO;
 import com.xikra.staybooker.service.HotelService;
+import com.xikra.staybooker.util.dtoCreator.AddressDTOCreator;
 import com.xikra.staybooker.util.dtoCreator.HotelDTOCreator;
+import com.xikra.staybooker.util.entityCreator.AddressCreator;
+import com.xikra.staybooker.util.entityCreator.GuestCreator;
 import com.xikra.staybooker.util.entityCreator.HotelCreator;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.DisplayName;
@@ -179,5 +182,20 @@ class HotelControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rating").value(expectedRatingUpdated));
+    }
+
+    @Test
+    @DisplayName("getAddressByZipcode returns hotel by zipcode when successful")
+    void getAddressByZipcode_ReturnsHotelByZipcode_WhenSuccessfull() throws Exception {
+        String expectedZipcode = HotelCreator.createdValidHotel().getAddress().getZipcode();
+
+        BDDMockito.when(hotelService.findByAddressZipcode("72830170")).thenReturn(Optional.of(HotelCreator.createdValidHotel()));
+        BDDMockito.when(hotelMapper.toDTO(any())).thenReturn(HotelDTOCreator.createdValidHotelDTO());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/staybooker/hotels/zipcode")
+                .param("zipcode", expectedZipcode)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath(".zipcode").value(expectedZipcode));
     }
 }

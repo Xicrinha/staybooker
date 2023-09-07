@@ -1,9 +1,12 @@
 package com.xikra.staybooker.service;
 
 import com.xikra.staybooker.domain.Address;
+import com.xikra.staybooker.domain.Guest;
 import com.xikra.staybooker.domain.Hotel;
 import com.xikra.staybooker.repository.HotelRepository;
+import com.xikra.staybooker.util.entityCreator.GuestCreator;
 import com.xikra.staybooker.util.entityCreator.HotelCreator;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,8 +22,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -128,5 +130,18 @@ class HotelServiceTest {
         assertThat(response).isNotNull();
         assertThat(response.getId()).isEqualTo(1L);
         assertThat(response.getRating()).isEqualTo(expectedRating);
+    }
+
+    @Test
+    @DisplayName("findByZipcode returns hotel when successful")
+    void findByZipcode_ReturnsHotel_WhenSuccessful(){
+        String expectedZipcode = HotelCreator.createdValidHotel().getAddress().getZipcode();
+
+        when(hotelRepository.findByAddressZipcode(anyString())).thenReturn(Optional.of(HotelCreator.createdValidHotel()));
+
+        Optional<Hotel> response = hotelService.findByAddressZipcode(expectedZipcode);
+
+        Assertions.assertThat(response).isNotNull();
+        Assertions.assertThat(response.get().getAddress().getZipcode()).isEqualTo(expectedZipcode);
     }
 }

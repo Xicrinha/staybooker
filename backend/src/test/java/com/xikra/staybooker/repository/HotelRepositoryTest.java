@@ -76,4 +76,19 @@ class HotelRepositoryTest {
 
         assertThatCode(() -> hotelRepository.deleteById(1L)).doesNotThrowAnyException();
     }
+
+    @Test
+    @DisplayName("test findByAddressZipcode method")
+    void test_findByAddressZipcode(){
+        Amenity amenity = amenityRepository.save(new Amenity(1L, "Piscina"));
+
+        Hotel hotelToBeSaved = HotelCreator.create_Hotel();
+        hotelToBeSaved.addAmenitiy(amenity);
+        Hotel hotelSaved = hotelRepository.save(hotelToBeSaved);
+
+        Optional<Hotel> response = hotelRepository.findByAddressZipcode(hotelSaved.getAddress().getZipcode());
+
+        assertThat(response).isNotNull();
+        assertThat(response.get().getId()).isEqualTo(hotelSaved.getId());
+    }
 }
