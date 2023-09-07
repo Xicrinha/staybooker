@@ -18,4 +18,6 @@ public interface HotelService {
     public boolean deleteHotel(Long id);
 
     public Hotel patchHotel(Long id, Hotel hotel);
+
+    public Optional<Hotel> findByAddressZipcode(String zipcode);
 }

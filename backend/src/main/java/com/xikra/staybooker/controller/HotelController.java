@@ -46,6 +46,14 @@ public class HotelController {
         return new ResponseEntity<>(hotelDTO, HttpStatus.OK);
     }
 
+    @GetMapping("/zipcode")
+    public ResponseEntity<HotelDTO> getHotelByZipcode(@RequestParam(required = false) String zipcode){
+        HotelDTO hotelDTO = hotelService.findByAddressZipcode(zipcode)
+                .map(hotelMapper::toDTO)
+                .orElseThrow(NotFoundException::new);
+        return new ResponseEntity<>(hotelDTO, HttpStatus.OK);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<HotelDTO> updateHotel(@PathVariable("id") Long id, @RequestBody @Valid HotelDTO hotelDTO){
         Hotel updatedHotel = hotelService.updateHotel(id,hotelMapper.toEntity(hotelDTO));

@@ -107,4 +107,9 @@ public class HotelServiceImpl implements HotelService {
 
         return hotelRepository.save(existingHotel);
     }
+
+    @Override
+    public Optional<Hotel> findByAddressZipcode(String zipcode) {
+        return hotelRepository.findByAddressZipcode(zipcode);
+    }
 }
