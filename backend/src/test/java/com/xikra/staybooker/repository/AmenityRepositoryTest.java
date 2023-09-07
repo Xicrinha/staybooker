@@ -16,14 +16,10 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 
 @DataJpaTest
-@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 class AmenityRepositoryTest {
 
     @Autowired
     private AmenityRepository amenityRepository;
-
-    @Autowired
-    private TestEntityManager testEntityManager;
 
     @Test
     @DisplayName("test save method")
@@ -40,7 +36,7 @@ class AmenityRepositoryTest {
     @DisplayName("test findById method")
     void test_findById() {
         Amenity amenityToBeSaved = Amenity.builder().name("wi-fi").build();
-        Amenity savedAmenity = testEntityManager.persistAndFlush(amenityToBeSaved);
+        Amenity savedAmenity = amenityRepository.save(amenityToBeSaved);
 
         Optional<Amenity> response = amenityRepository.findById(savedAmenity.getId());
 

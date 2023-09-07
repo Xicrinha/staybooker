@@ -5,10 +5,7 @@ import com.xikra.staybooker.util.entityCreator.AddressCreator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -18,14 +15,11 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 
 @DataJpaTest
-@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 class AddressRepositoryTest {
 
     @Autowired
     private AddressRepository addressRepository;
 
-    @Autowired
-    private TestEntityManager testEntityManager;
 
     @Test
     @DisplayName("test save method")
@@ -42,7 +36,7 @@ class AddressRepositoryTest {
     @DisplayName("test findById method")
     void test_findById() {
         Address addressToBeSaved = AddressCreator.createAddressToBeSaved();
-        Address savedAddress = testEntityManager.persistAndFlush(addressToBeSaved);
+        Address savedAddress = addressRepository.save(addressToBeSaved);
 
         Optional<Address> response = addressRepository.findById(savedAddress.getId());
 
@@ -53,7 +47,7 @@ class AddressRepositoryTest {
     @DisplayName("test findByZipcode method")
     void test_findByZipcode(){
         Address addressToBeSaved = AddressCreator.createAddressToBeSaved();
-        Address savedAddress = testEntityManager.persistAndFlush(addressToBeSaved);
+        Address savedAddress = addressRepository.save(addressToBeSaved);
 
         Optional<Address> response = addressRepository.findByZipcode("72830170");
 
